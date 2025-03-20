@@ -13,15 +13,19 @@
 
 class Tienda {
 private:
-  Inventario inventario;
-  std::vector<Cliente> clientes;  // Lista de clientes
-  std::vector<Venta> ventas;      // Lista de ventas
+    Inventario* inventario;       // Ahora es puntero
+    std::vector<Cliente*> clientes;
+    std::vector<Venta*> ventas;
 
 public:
-  void registrarCliente(Cliente nuevoCliente);
-  void realizarVenta(std::string idCliente, std::vector<std::pair<Producto, int>> productosVendidos);
-  void getInfo();
+    Tienda();   // Constructor
+    ~Tienda();  // Destructor
+
+    void registrarCliente(Cliente* nuevoCliente);
+    void realizarVenta(std::string idCliente, std::vector<std::pair<Producto*, int>> productosVendidos);
+    void getInfo();
+
+    Inventario* getInventario();
 };
 
 #endif //TIENDA_H
-

@@ -8,11 +8,11 @@
 using namespace std;
 
 // Constructor de Producto
-Producto::Producto(string cod, string nom, double prec, int cant) {
-    codigo = cod;
-    nombre = nom;
-    precio = prec;
-    cantidad = cant;
+Producto::Producto(std::string codigo, std::string nombre, double precio, int cantidad) {
+    this->codigo = codigo;
+    this->nombre = nombre;
+    this->precio = precio;
+    this->cantidad = cantidad;
 }
 
 // Método para actualizar la cantidad en stock

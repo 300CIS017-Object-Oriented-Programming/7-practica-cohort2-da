@@ -15,6 +15,7 @@ class Cliente {
   public:
     Cliente(std::string idC, std::string nom);
     void registrarCompra(std::string codigoProducto);
+    std::string getNombre() { return nombre; }
     void getInfo();
 };
 

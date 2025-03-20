@@ -11,10 +11,12 @@
 
 class Inventario {
 private:
-  std::vector<Producto> productos; // Lista de productos en el inventario
+  std::vector<Producto*> productos;
 
 public:
-  void agregarProducto(Producto nuevoProducto);
+  Inventario();  // Constructor
+  ~Inventario(); // Destructor para liberar memoria
+  void agregarProducto(Producto* nuevoProducto);
   Producto* getProducto(std::string codigo); // Devuelve puntero para modificar el producto
   double calcularValorTotalInventario();
   void getInfo();

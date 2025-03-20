@@ -15,6 +15,10 @@ class Producto {
     int cantidad;
   public:
     Producto(std::string cod, std::string nom, double prec, int cant);
+    std::string getCodigo() { return codigo; }
+    std::string getNombre() const { return nombre; }
+    double getPrecio() const { return precio; }
+    int getCantidad() { return cantidad; }
     void actualizarStock(int cantidadNueva);
     void getInfo();
     };

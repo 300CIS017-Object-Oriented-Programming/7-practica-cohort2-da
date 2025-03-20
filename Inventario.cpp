@@ -6,37 +6,46 @@
 
 using namespace std;
 
-// Método para agregar un producto al inventario
-void Inventario::agregarProducto(Producto nuevoProducto) {
+// Constructor
+Inventario::Inventario() {}
+
+// Destructor: Libera memoria de cada producto
+Inventario::~Inventario() {
+    for (auto producto : productos) {
+        delete producto; // Elimina cada producto dinámico
+    }
+}
+
+// Agrega un producto al inventario
+void Inventario::agregarProducto(Producto* nuevoProducto) {
     productos.push_back(nuevoProducto);
 }
 
-// Método para buscar un producto por su código
+// Buscar producto por código
 Producto* Inventario::getProducto(string codigo) {
-    for (auto& producto : productos) {
-        if (producto.getCodigo() == codigo) {
-            return &producto; // Devuelve la dirección de memoria del producto encontrado
+    for (auto producto : productos) {
+        if (producto->getCodigo() == codigo) {
+            return producto; // Retorna puntero al producto encontrado
         }
     }
-    return nullptr; // Retorna nullptr si el producto no existe
+    return nullptr;
 }
 
-// Método para calcular el valor total del inventario
+// Calcular el valor total del inventario
 double Inventario::calcularValorTotalInventario() {
     double total = 0;
-    for (const auto& producto : productos) {
-        total += producto.getPrecio() * producto.getCantidad();
+    for (auto producto : productos) {
+        total += producto->getPrecio() * producto->getCantidad();
     }
     return total;
 }
 
-// Método para mostrar todos los productos del inventario
+// Mostrar información del inventario
 void Inventario::getInfo() {
     cout << "Inventario de la tienda:" << endl;
-    for (const auto& producto : productos) {
-        producto.getInfo(); // Llama al método getInfo() de Producto
+    for (auto producto : productos) {
+        producto->getInfo();
         cout << "----------------------" << endl;
     }
     cout << "Valor total del inventario: $" << calcularValorTotalInventario() << endl;
 }
-
