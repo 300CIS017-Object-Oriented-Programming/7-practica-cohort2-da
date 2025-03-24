@@ -8,8 +8,7 @@ using namespace std;
 
 // Constructor: Inicializa el inventario dinámicamente
 Tienda::Tienda() {
-    inventario = new Inventario();
-    cout << "Tienda inicializada correctamente." << endl;
+    inventario = new Inventario(); // Se inicializa correctamente
 }
 
 // Destructor: Libera memoria
@@ -32,6 +31,11 @@ void Tienda::registrarCliente(Cliente* nuevoCliente) {
 
 // Realizar venta con punteros
 void Tienda::realizarVenta(string idCliente, vector<pair<Producto*, int>> productosVendidos) {
+    if (!inventario) {
+        cout << "Error: El inventario no está inicializado." << endl;
+        return;
+    }
+
     Cliente* cliente = nullptr;
     for (auto c : clientes) {
         if (c->getNombre() == idCliente) {
@@ -72,7 +76,11 @@ void Tienda::getInfo() {
     cout << "----- INFORMACIÓN DE LA TIENDA -----" << endl;
 
     cout << "\n--- Inventario ---\n";
-    inventario->getInfo();
+    if (inventario) {
+        inventario->getInfo();
+    } else {
+        cout << "Inventario no disponible." << endl;
+    }
 
     cout << "\n--- Clientes ---\n";
     for (const auto& cliente : clientes) {
@@ -86,6 +94,12 @@ void Tienda::getInfo() {
         cout << "----------------------" << endl;
     }
 }
+
+// Retorna el inventario, asegurando que no sea nullptr
 Inventario* Tienda::getInventario() {
+    if (!inventario) {
+        cout << "Error: Inventario no inicializado." << endl;
+        return nullptr;
+    }
     return inventario;
 }

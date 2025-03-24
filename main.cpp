@@ -1,5 +1,8 @@
 #include <iostream>
+#include <limits>
+
 #include "Tienda.h"
+
 
 using namespace std;
 
@@ -11,11 +14,11 @@ void mostrarMenu() {
     cout << "4. Mostrar valor total del inventario\n";
     cout << "5. Mostrar informacion de la tienda\n";
     cout << "6. Salir\n";
-    cout << "Seleccione una opción: ";
+    cout << "Seleccione una opcion: ";
 }
 
 int main() {
-    Tienda* tienda = new Tienda();
+    auto* tienda = new Tienda();
     int opcion;
 
     do {
@@ -35,14 +38,28 @@ int main() {
                 cout << "Ingrese nombre del producto: ";
                 getline(cin, nombre);
                 cout << "Ingrese precio del producto: ";
-                cin >> precio;
+                while (!(cin >> precio) || precio < 0) {
+                    cout << "Precio inválido. Ingrese nuevamente: ";
+                    cin.clear();
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                }
                 cout << "Ingrese cantidad inicial: ";
-                cin >> cantidad;
+                while (!(cin >> cantidad) || cantidad < 0) {
+                    cout << "Cantidad inválida. Ingrese nuevamente: ";
+                    cin.clear();
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                }
                 cin.ignore();
 
-                Producto* nuevoProducto = new Producto(codigo, nombre, precio, cantidad);
-                tienda->getInventario()->agregarProducto(nuevoProducto);
-                cout << "Producto registrado exitosamente.\n";
+                auto* nuevoProducto = new Producto(codigo, nombre, precio, cantidad);
+                Inventario* inventario = tienda->getInventario();
+                if (inventario) {
+                    inventario->agregarProducto(nuevoProducto);
+                    cout << "Producto registrado exitosamente.\n";
+                } else {
+                    cout << "Error: Inventario no disponible.\n";
+                    delete nuevoProducto;
+                }
                 break;
             }
             case 2: {
@@ -53,7 +70,7 @@ int main() {
                 cout << "Ingrese nombre del cliente: ";
                 getline(cin, nombre);
 
-                Cliente* nuevoCliente = new Cliente(idCliente, nombre);
+                auto* nuevoCliente = new Cliente(idCliente, nombre);
                 tienda->registrarCliente(nuevoCliente);
                 cout << "Cliente registrado exitosamente.\n";
                 break;
@@ -67,23 +84,33 @@ int main() {
                 vector<pair<Producto*, int>> productosVendidos;
                 string codigoProducto;
                 int cantidad;
+                Inventario* inventario = tienda->getInventario();
+
+                if (!inventario) {
+                    cout << "Error: Inventario no disponible.\n";
+                    break;
+                }
 
                 cout << "Ingrese codigo del producto a comprar (o '0' para terminar): ";
                 while (getline(cin, codigoProducto) && codigoProducto != "0") {
-                    Producto* producto = tienda->getInventario()->getProducto(codigoProducto);
+                    Producto* producto = inventario->getProducto(codigoProducto);
                     if (!producto) {
                         cout << "Producto no encontrado. Intente nuevamente.\n";
                         continue;
                     }
 
                     cout << "Ingrese cantidad a comprar: ";
-                    cin >> cantidad;
+                    while (!(cin >> cantidad) || cantidad <= 0) {
+                        cout << "Cantidad inválida. Ingrese nuevamente: ";
+                        cin.clear();
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    }
                     cin.ignore();
 
                     if (producto->getCantidad() < cantidad) {
                         cout << "Stock insuficiente. Solo hay " << producto->getCantidad() << " disponibles.\n";
                     } else {
-                        productosVendidos.push_back({producto, cantidad});
+                        productosVendidos.emplace_back(producto, cantidad);
                     }
 
                     cout << "Ingrese codigo del siguiente producto (o '0' para terminar): ";
@@ -99,7 +126,12 @@ int main() {
             }
             case 4: {
                 // Mostrar valor total del inventario
-                cout << "Valor total del inventario: $" << tienda->getInventario()->calcularValorTotalInventario() << endl;
+                Inventario* inventario = tienda->getInventario();
+                if (inventario) {
+                    cout << "Valor total del inventario: $" << inventario->calcularValorTotalInventario() << endl;
+                } else {
+                    cout << "Error: Inventario no disponible.\n";
+                }
                 break;
             }
             case 5: {
@@ -121,3 +153,4 @@ int main() {
     delete tienda;  // Liberar memoria antes de salir
     return 0;
 }
+
